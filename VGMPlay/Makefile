@@ -43,6 +43,11 @@ ifndef DEBUG
 DEBUG = 0
 endif
 
+# set to 1 for debug builds
+ifndef NOUI
+NOUI = 1
+endif
+
 # set to 1 for swprintf fix on older MinGW versions
 ifndef OLD_SWPRINTF
 OLD_SWPRINTF = 0
@@ -242,15 +247,19 @@ EMUOBJS = \
 	$(EMUOBJ)/sn76496_opl.o \
 	$(EMUOBJ)/ym2413hd.o \
 	$(EMUOBJ)/ym2413_opl.o
-VGMPLAY_OBJS = \
-	$(OBJ)/VGMPlayUI.o
- 
+
+VGMPLAY_OBJS =
+ifeq ($(NOUI), 1)
+VGMPLAY_OBJS += $(OBJ)/VGMPlayCMD.o
+else
+VGMPLAY_OBJS += $(OBJ)/VGMPlayUI.o
 ifeq ($(USE_DBUS), 1)
 	VGMPLAY_OBJS += $(OBJ)/dbus.o
 else ifeq ($(WINDOWS), 1)
 	VGMPLAY_OBJS += $(OBJ)/mmkeys_Win.o $(OBJ)/dbus_stub.o
 else
 	VGMPLAY_OBJS += $(OBJ)/mmkeys_stub.o $(OBJ)/dbus_stub.o
+endif
 endif
 
 VGM2PCM_OBJS = \
